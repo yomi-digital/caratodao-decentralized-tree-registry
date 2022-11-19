@@ -1,0 +1,199 @@
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
+body,
+html {
+    font-family: "Jost", sans-serif;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+}
+
+@mixin btn {
+    padding: 12px 22px !important;
+    border-radius: 10px !important;
+    vertical-align: middle !important;
+    box-sizing: border-box;
+    display: inline-block !important;
+    cursor: pointer !important;
+    transition: all 0.3s !important;
+    letter-spacing: 0.04em !important;
+    font-size: 0.813rem !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    &:hover {
+        transition: all 0.3s;
+    }
+}
+
+@mixin btn-colored {
+    background-color: var(--secondary-color) !important;
+    border: 1px solid var(--secondary-color) !important;
+    color: var(--primary-color-contrast) !important;
+    &:hover {
+        background-color: var(--primary-color-contrast) !important;
+        border: 1px solid var(--secondary-color) !important;
+        color: var(--secondary-color) !important;
+    }
+}
+
+// ============================================ ▲▲▲▲▲ ===============================================
+// ============================================ FONTS ===============================================
+// ============================================ ▼▼▼▼▼ ===============================================
+h1,
+p {
+    color: var(--primary-color);
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.color-secondary {
+    color: var(--secondary-color) !important;
+}
+
+.color-error {
+    color: var(--error-color) !important;
+}
+
+// ============================================ ▲▲▲▲▲▲▲▲ ============================================
+// ============================================ ELEMENTS ============================================
+// ============================================ ▼▼▼▼▼▼▼▼ ============================================
+.alert-banner {
+    background-color: var(--secondary-color);
+    p,
+    i {
+        color: var(--primary-color);
+    }
+    p,
+    b {
+        font-size: 0.875rem;
+    }
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 999;
+    .modal-container {
+        width: 100%;
+        max-width: 550px;
+        background-color: var(--primary-color-contrast);
+        border-radius: 15px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+
+        h2 {
+            font-size: 1.375rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin: 0;
+            padding: 0;
+            line-height: 1.1;
+        }
+        .modal-header {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.13);
+            background-color: var(--secondary-color);
+            position: relative;
+            text-align: center;
+            border-top-left-radius: 11px;
+            border-top-right-radius: 11px;
+            h3,
+            i {
+                color: var(--primary-color-contrast);
+            }
+            h3 {
+                font-size: 1.5rem;
+
+                font-weight: 600;
+                margin: 0;
+                padding: 0;
+                line-height: 1.1;
+            }
+        }
+        .modal-header-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translate(0, -50%);
+        }
+        .modal-content {
+            width: 100%;
+            text-align: left;
+            .b-steps .steps .step-items .step-item .step-details .step-title {
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--primary-color);
+            }
+        }
+        .icon-status {
+            i {
+                font-size: 4rem;
+                color: var(--secondary-color);
+            }
+        }
+    }
+}
+
+.card-map {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border: 1px solid var(--secondary-color);
+    position: relative;
+}
+.custom-navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+}
+
+.gravatar-nav {
+    height: 100%;
+    width: auto;
+    max-width: unset;
+    border-radius: 100px;
+}
+
+// ============================================ ▲▲▲▲▲▲▲ =============================================
+// ============================================ BUTTONS =============================================
+// ============================================ ▼▼▼▼▼▼▼ =============================================
+.btn-primary {
+    @include btn;
+    @include btn-colored;
+    &:disabled {
+        background-color: #dddddd !important;
+        color: grey !important;
+        border: 1px solid #dddddd !important;
+    }
+}
+
+.btn-tree {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+// ============================================ ▲▲▲▲▲▲▲▲▲▲▲ ============================================
+// ============================================ POSITIONING ============================================
+// ============================================ ▼▼▼▼▼▼▼▼▼▼▼ ============================================
+.gap-navbar {
+    width: 100%;
+    height: 60px;
+}
