@@ -5,7 +5,7 @@ import { ABI } from "../libs/abi"
 import { ethers } from "ethers"
 
 const requestsTable = process.env.STAGE + "_caratoRequests"
-const contractAddr = "0xE04104DdBa2f7e795aCfCc461fA1c8B48A96FB46"
+const contractAddr = "0xA5EDc79f51A8138511C2408870a88840d7Ad27D8"
 
 export async function mintTree(req: express.Request, res: express.res) {
     if (req.body.operation !== undefined && req.body.details !== undefined && req.body.signature !== undefined) {

@@ -59,10 +59,15 @@ task("mint-tree", "Mint a new tree.")
       const nonce0x = await callRpc("eth_getTransactionCount", [signer.address, "latest"]);
       const nonce = parseInt(nonce0x, "hex")
       console.log('nonce:', nonce);
-      
+
       try {
         const contractInterface = new ethers.utils.Interface(deployment.abi)
-        const data = await contractInterface.encodeFunctionData("mintTree", [[signature]])
+        const status = "GROWING"
+        const coordinates = "36.8853942,14.5329769"
+        const platingDate = "2022-11-06"
+        const details = "Quercus"
+        // Send transaction
+        const data = await contractInterface.encodeFunctionData("mintTree", [[signature], status, coordinates, platingDate, details])
         const transaction = await signer.sendTransaction({
           from: signer.address,
           to: contractAddr,

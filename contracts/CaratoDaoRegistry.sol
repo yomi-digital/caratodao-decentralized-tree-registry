@@ -20,7 +20,6 @@ contract CaratoDaoRegistry is ERC721 {
 
     mapping(uint256 => Tree) private _trees;
     mapping(address => bool) public _members;
-    uint256 private _round;
     uint256 public _activeMembers;
 
     constructor() ERC721("CaratoTrees", "CTT") {
@@ -75,7 +74,8 @@ contract CaratoDaoRegistry is ERC721 {
 
     function getDecisionMessage() public view returns (bytes memory) {
         // This should be different for different kind of decisions
-        return abi.encodePacked(Strings.toString(_round));
+        uint256 epoch = block.timestamp / 2_592_000;
+        return abi.encodePacked(Strings.toString(epoch));
     }
 
     function verifyMemberSignature(bytes memory signature)
@@ -89,13 +89,12 @@ contract CaratoDaoRegistry is ERC721 {
         return recovered;
     }
 
-    function verifyConsensus(bytes[] memory signatures) public returns (bool) {
+    function verifyConsensus(bytes[] memory signatures) public view returns (bool) {
         for (uint256 i = 0; i < signatures.length; i++) {
             bytes memory signature = signatures[i];
             address voter = verifyMemberSignature(signature);
             require(_members[voter], "This signature is not valid");
         }
-        _round++;
         if (signatures.length >= consensusThreshold()) {
             return true;
         } else {
@@ -118,14 +117,21 @@ contract CaratoDaoRegistry is ERC721 {
         }
     }
 
-    function mintTree(bytes[] memory signatures)
-        public
-        returns (uint256 tokenId)
-    {
+    function mintTree(
+        bytes[] memory signatures,
+        string memory status,
+        string memory coordinates,
+        string memory plantingDate,
+        string memory details
+    ) public returns (uint256 tokenId) {
         require(verifyConsensus(signatures), "Consensus not reached");
         _tokenIdCounter.increment();
         uint256 newTokenId = _tokenIdCounter.current();
         _mint(address(this), newTokenId);
+        _trees[newTokenId].status = status;
+        _trees[newTokenId].coordinates = coordinates;
+        _trees[newTokenId].plantingDate = plantingDate;
+        _trees[newTokenId].details = details;
         return newTokenId;
     }
 
