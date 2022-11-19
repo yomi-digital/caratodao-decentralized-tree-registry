@@ -3,12 +3,11 @@ pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "./Base64.sol";
 
-contract CaratoDaoRegistry is ERC721, Ownable {
+contract CaratoDaoRegistry is ERC721 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIdCounter;
 
@@ -22,10 +21,10 @@ contract CaratoDaoRegistry is ERC721, Ownable {
     mapping(uint256 => Tree) private _trees;
     mapping(address => bool) public _members;
     uint256 private _round;
-    uint256 public _active_members;
+    uint256 public _activeMembers;
 
     constructor() ERC721("CaratoTrees", "CTT") {
-        _active_members = 1;
+        _activeMembers = 1;
         _members[msg.sender] = true;
     }
 
@@ -45,32 +44,32 @@ contract CaratoDaoRegistry is ERC721, Ownable {
                 string(
                     abi.encodePacked(
                         "{",
-                        "'status': '",
+                        '"status": "',
                         tree.status,
-                        "',",
-                        "'coordinates': '",
+                        '",',
+                        '"coordinates": "',
                         tree.coordinates,
-                        "',",
-                        "'plantingDate': '",
+                        '",',
+                        '"plantingDate": "',
                         tree.plantingDate,
-                        "',",
-                        "'details': '",
+                        '",',
+                        '"details": "',
                         tree.details,
-                        "',",
+                        '"',
                         "}"
                     )
                 )
             )
         );
+
         string memory output = string(
             abi.encodePacked("data:application/json;base64,", json)
         );
         return output;
     }
 
-    
     function consensusThreshold() public view returns (uint256) {
-        uint256 oneThird = _active_members / 3;
+        uint256 oneThird = _activeMembers / 3;
         return oneThird;
     }
 
@@ -110,11 +109,12 @@ contract CaratoDaoRegistry is ERC721, Ownable {
         bytes[] memory signatures
     ) external {
         require(verifyConsensus(signatures), "Consensus not reached");
+        require(_members[member] != status, "Same status, nothing to change");
         _members[member] = status;
         if (status) {
-            _active_members++;
+            _activeMembers++;
         } else {
-            _active_members--;
+            _activeMembers--;
         }
     }
 
