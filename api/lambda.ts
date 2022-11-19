@@ -15,6 +15,7 @@ app.get("/", async function (req, res) {
 })
 
 app.post('/mint/tree', nfts.mintTree)
+app.get('/trees', nfts.getTrees)
 
 app.use((req, res, next) => {
   return res.status(404).json({

@@ -1,17 +1,6 @@
 export const ABI = [
   {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_ticker",
-        "type": "string"
-      }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -71,25 +60,6 @@ export const ABI = [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "from",
         "type": "address"
       },
@@ -108,6 +78,38 @@ export const ABI = [
     ],
     "name": "Transfer",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "_activeMembers",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "_members",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [
@@ -148,12 +150,12 @@ export const ABI = [
   },
   {
     "inputs": [],
-    "name": "contract_base_uri",
+    "name": "consensusThreshold",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "uint256",
         "name": "",
-        "type": "string"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -163,29 +165,21 @@ export const ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_proxy",
+        "name": "member",
         "type": "address"
       },
       {
         "internalType": "bool",
-        "name": "_state",
+        "name": "status",
         "type": "bool"
-      }
-    ],
-    "name": "fixProxy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+      },
       {
-        "internalType": "string",
-        "name": "_newURI",
-        "type": "string"
+        "internalType": "bytes[]",
+        "name": "signatures",
+        "type": "bytes[]"
       }
     ],
-    "name": "fixURI",
+    "name": "fixMember",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -204,6 +198,53 @@ export const ABI = [
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getDecisionMessage",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getTree",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "coordinates",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "plantingDate",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "details",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -236,13 +277,19 @@ export const ABI = [
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_to",
-        "type": "address"
+        "internalType": "bytes[]",
+        "name": "signatures",
+        "type": "bytes[]"
       }
     ],
-    "name": "mintNFT",
-    "outputs": [],
+    "name": "mintTree",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -254,19 +301,6 @@ export const ABI = [
         "internalType": "string",
         "name": "",
         "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -289,13 +323,6 @@ export const ABI = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -340,7 +367,7 @@ export const ABI = [
       },
       {
         "internalType": "bytes",
-        "name": "_data",
+        "name": "data",
         "type": "bytes"
       }
     ],
@@ -403,7 +430,7 @@ export const ABI = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_tokenId",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],
@@ -413,25 +440,6 @@ export const ABI = [
         "internalType": "string",
         "name": "",
         "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_owner",
-        "type": "address"
-      }
-    ],
-    "name": "tokensOfOwner",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "ownerTokens",
-        "type": "uint256[]"
       }
     ],
     "stateMutability": "view",
@@ -476,14 +484,77 @@ export const ABI = [
   {
     "inputs": [
       {
+        "internalType": "bytes[]",
+        "name": "signatures",
+        "type": "bytes[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "coordinates",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "plantingDate",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "details",
+        "type": "string"
+      }
+    ],
+    "name": "updateTree",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes[]",
+        "name": "signatures",
+        "type": "bytes[]"
+      }
+    ],
+    "name": "verifyConsensus",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "verifyMemberSignature",
+    "outputs": [
+      {
         "internalType": "address",
-        "name": "newOwner",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   }
 ]
