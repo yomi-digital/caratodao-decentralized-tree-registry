@@ -38,51 +38,50 @@ const deployer = new ethers.Wallet(DEPLOYER_PRIVATE_KEY);
 module.exports = async ({ deployments }) => {
   const { deploy } = deployments;
 
+  const delegated = await fa.newDelegatedEthAddress(deployer.address)
 
   const priorityFee = await callRpc("eth_maxPriorityFeePerGas");
-  const f4Address = fa.newDelegatedEthAddress(deployer.address).toString();
-  const nonce = await callRpc("Filecoin.MpoolGetNonce", [f4Address]);
+  // Reading the nonce 
+  const nonce0x = await callRpc("eth_getTransactionCount", [deployer.address, "latest"]);
+  const nonce = parseInt(nonce0x, "hex")
+  console.log('nonce:', nonce);
+  
+  console.log("Ethereum deployer address:", deployer.address);
+  console.log("Filecoin delegated address:", delegated.toString())
+  // If the address has not recieved Filecoin yet, this line will fail. Go to faucet.
+  let actorId = await callRpc('Filecoin.StateLookupID', [delegated.toString(), []]);
+  actorIdDecimal = Number(actorId.slice(1)).toString(10);
+  actorId = Number(actorId.slice(1)).toString(16);
+  const f0addr = '0xff' + '0'.repeat(38 - actorId.length) + actorId;
 
-  console.log("Wallet Ethereum Address:", deployer.address);
-  console.log("Wallet f4Address: ", f4Address)
-
-
-  await deploy("SimpleCoin", {
-    from: deployer.address,
-    args: [],
-    // since it's difficult to estimate the gas before f4 address is launched, it's safer to manually set
-    // a large gasLimit. This should be addressed in the following releases.
-    gasLimit: 1000000000, // BlockGasLimit / 10
-    // since Ethereum's legacy transaction format is not supported on FVM, we need to specify
-    // maxPriorityFeePerGas to instruct hardhat to use EIP-1559 tx format
-    maxPriorityFeePerGas: priorityFee,
-    log: true,
-  });
-
-  await deploy("MinerAPI", {
-    from: deployer.address,
-    args: [],
-    // since it's difficult to estimate the gas before f4 address is launched, it's safer to manually set
-    // a large gasLimit. This should be addressed in the following releases.
-    gasLimit: 1000000000, // BlockGasLimit / 10
-    // since Ethereum's legacy transaction format is not supported on FVM, we need to specify
-    // maxPriorityFeePerGas to instruct hardhat to use EIP-1559 tx format
-    maxPriorityFeePerGas: priorityFee,
-    log: true,
-  });
-
-  await deploy("MarketAPI", {
-    from: deployer.address,
-    args: [],
-    // since it's difficult to estimate the gas before f4 address is launched, it's safer to manually set
-    // a large gasLimit. This should be addressed in the following releases.
-    gasLimit: 1000000000, // BlockGasLimit / 10
-    // since Ethereum's legacy transaction format is not supported on FVM, we need to specify
-    // maxPriorityFeePerGas to instruct hardhat to use EIP-1559 tx format
-    maxPriorityFeePerGas: priorityFee,
-    log: true,
-  });
+  // console.log('Filecoin deployer address f0', "f0" + actorIdDecimal)
+  // console.log('Ethereum deployer address (from f0):', f0addr);
+  console.log("priorityFee: ", priorityFee);
+  console.log("--")
+  try {
+    await deploy("CaratoDaoRegistry", {
+      from: deployer.address,
+      args: [],
+      // since it's difficult to estimate the gas before f4 address is launched, it's safer to manually set
+      // a large gasLimit. This should be addressed in the following releases.
+      gasLimit: 1000000000, // BlockGasLimit / 10
+      // since Ethereum's legacy transaction format is not supported on FVM, we need to specify
+      // maxPriorityFeePerGas to instruct hardhat to use EIP-1559 tx format
+      maxPriorityFeePerGas: priorityFee,
+      nonce: nonce,
+      log: true,
+    });
+  } catch (e) {
+    console.log("--")
+    console.log("Deployment data:", {
+      from: deployer.address,
+      args: [],
+      gasLimit: 1000000000,
+      maxPriorityFeePerGas: priorityFee,
+      nonce: nonce,
+      log: true,
+    })
+    console.log("Error:", e.message)
+  }
 };
-
-
-module.exports.tags = ["SimpleCoin", "MinerAPI", "MarketAPI"];
+module.exports.tags = ["SimpleCoin"];

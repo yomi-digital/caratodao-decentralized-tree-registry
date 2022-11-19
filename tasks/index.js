@@ -1,2 +1,4 @@
-exports.getBalance = require("./simple-coin/get-balance")
+exports.getBalance = require("./get-decision-message")
 exports.getAddress = require("./get-address")
+exports.initAddress = require("./sign-decision")
+exports.initAddress = require("./add-member")
