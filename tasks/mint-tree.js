@@ -64,10 +64,10 @@ task("mint-tree", "Mint a new tree.")
         const contractInterface = new ethers.utils.Interface(deployment.abi)
         const status = "GROWING"
         const coordinates = "36.8853942,14.5329769"
-        const platingDate = "2022-11-06"
+        const platningDate = "2022-11-06"
         const details = "Quercus"
         // Send transaction
-        const data = await contractInterface.encodeFunctionData("mintTree", [[signature], status, coordinates, platingDate, details])
+        const data = await contractInterface.encodeFunctionData("mintTree", [[signature], status, coordinates, platningDate, details])
         const transaction = await signer.sendTransaction({
           from: signer.address,
           to: contractAddr,

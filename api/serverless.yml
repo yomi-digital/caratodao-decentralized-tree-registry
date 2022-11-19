@@ -17,7 +17,7 @@ provider:
   runtime: nodejs14.x
   lambdaHashingVersion: "20201221"
   stage: dev
-  timeout: 30
+  timeout: 90
   iam:
     role:
       statements:

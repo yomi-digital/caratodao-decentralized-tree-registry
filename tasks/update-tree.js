@@ -66,10 +66,10 @@ task("update-tree", "Update tree details.")
         const tokenId = "1"
         const status = "GROWING"
         const coordinates = "36.8853942,14.5329769"
-        const platingDate = "2022-11-06"
+        const plantingDate = "2022-11-06"
         const details = "Quercus"
 
-        const data = await contractInterface.encodeFunctionData("updateTree", [[signature], tokenId, status, coordinates, platingDate, details])
+        const data = await contractInterface.encodeFunctionData("updateTree", [[signature], tokenId, status, coordinates, plantingDate, details])
         const transaction = await signer.sendTransaction({
           from: signer.address,
           to: contractAddr,

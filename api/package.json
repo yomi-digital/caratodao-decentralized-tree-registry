@@ -37,8 +37,10 @@
     "nodemailer": "^6.7.3",
     "nodemailer-plugin-inline-base64": "^2.1.1",
     "qrcode": "^1.5.0",
+    "request": "^2.88.2",
     "serverless-http": "^2.7.0",
     "stripe": "^8.213.0",
+    "util": "^0.12.5",
     "uuid": "^8.3.2",
     "web3": "^1.7.1"
   }
