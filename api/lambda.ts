@@ -15,7 +15,8 @@ app.get("/", async function (req, res) {
 })
 
 app.post('/mint/tree', nfts.mintTree)
-app.get('/process/minting', nfts.processMinting)
+app.post("/mint/confirm", nfts.confirmMinting)
+// app.get('/process/minting', nfts.processMinting)
 app.get('/trees', nfts.getTrees)
 
 app.use((req, res, next) => {

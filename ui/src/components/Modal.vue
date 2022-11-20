@@ -35,7 +35,7 @@
 
                                 <b-field label="Description" vertical>
                                     <b-input rows="2" type="textarea"
-                                        placeholder=" Banana is a plant belonging to the Musaceae family" maxlength="30"
+                                        placeholder=" Banana is a plant belonging to the Musaceae family" maxlength="250"
                                         v-model="description">
                                     </b-input>
                                 </b-field>

@@ -6,7 +6,7 @@
             <div class="columns">
                 <div class="column is-5">
                     <div>
-                        <h1 class="">CaratoDAO</h1>
+                        <h1 class="">🌳 CaratoDAO</h1>
                         <h2 class="subtitle">Decentralized Tree Registry</h2>
                         <p>
                             Tree registry is a smart-contract developed on the FEVM, the Filecoin EVM-compatible virtual
@@ -75,7 +75,7 @@ export default {
     data() {
         return {
             account: "",
-            contract: "0xA5EDc79f51A8138511C2408870a88840d7Ad27D8",
+            contract: "0x1bB2f70C37Ca0Cc0A318456bD8D8855e4958855B",
             web3: "",
             network: 18,
             abi: ABI,

@@ -9,9 +9,13 @@ const util = require("util");
 const request = util.promisify(require("request"));
 
 const requestsTable = process.env.STAGE + "_caratoRequests"
-const contractAddr = "0xA5EDc79f51A8138511C2408870a88840d7Ad27D8"
+// Test contract
+// const contractAddr = "0xA5EDc79f51A8138511C2408870a88840d7Ad27D8"
 
-async function callRpc(method, params = {}) {
+// Live contract
+const contractAddr = "0x1bB2f70C37Ca0Cc0A318456bD8D8855e4958855B"
+
+async function callRpc(method, params) {
     var options = {
         method: "POST",
         url: "https://wallaby.node.glif.io/rpc/v0",
@@ -62,6 +66,7 @@ export async function mintTree(req: express.Request, res: express.res) {
     }
 }
 
+// TODO: Fix process because doesn't work
 export async function processMinting(req: express.Request, res: express.res) {
     try {
         console.log("Scanning collection..")
@@ -76,7 +81,6 @@ export async function processMinting(req: express.Request, res: express.res) {
             console.log("Minting:", tree)
             try {
                 // Take nonce and fees from blockchain
-                const priorityFee = await callRpc("eth_maxPriorityFeePerGas");
                 const nonce0x = await callRpc("eth_getTransactionCount", [signer.address, "latest"]);
                 let nonce = parseInt(nonce0x)
                 console.log('Checking nonce:', nonce);
@@ -98,7 +102,6 @@ export async function processMinting(req: express.Request, res: express.res) {
                 )
                 // Create contract instance
                 console.log("Creating contract instance..")
-                const contractAddr = "0xA5EDc79f51A8138511C2408870a88840d7Ad27D8"
                 const CaratoDaoRegistryContract = new ethers.Contract(contractAddr, ABI, signer)
                 // Signing request by key
                 const prefix = await CaratoDaoRegistryContract.getDecisionMessage()
@@ -111,15 +114,13 @@ export async function processMinting(req: express.Request, res: express.res) {
                 const plantingDate = tree.details.plantingDate
                 const details = tree.details.details
                 // Send transaction
-                const contractInterface = new ethers.utils.Interface(ABI)
-                const data = await contractInterface.encodeFunctionData("mintTree", [[signature], status, coordinates, plantingDate, details])
-                const transaction = await signer.sendTransaction({
-                    from: signer.address,
-                    to: contractAddr,
+                const priorityFee = await callRpc("eth_maxPriorityFeePerGas", []);
+                const priorityFeeHex = ethers.BigNumber.from(priorityFee).mul(2)
+                console.log("Priority fee:", priorityFeeHex)
+                const transaction = await CaratoDaoRegistryContract.mintTree([signature], status, coordinates, plantingDate, details, {
                     value: "0",
-                    data: data,
                     gasLimit: 10000000000,
-                    maxPriorityFeePerGas: priorityFee,
+                    maxPriorityFeePerGas: priorityFeeHex,
                     nonce: nonce
                 })
                 console.log(transaction)
@@ -129,15 +130,30 @@ export async function processMinting(req: express.Request, res: express.res) {
                     "set minted = :m and txid = :t",
                     { ":m": true, ":t": transaction }
                 )
+                res.send({ message: "Minting successful.", error: false })
             } catch (e) {
-                await update(
-                    requestsTable,
-                    { opId: tree.opId, },
-                    "set nonce = :n",
-                    { ":n": "" }
-                )
-                console.log("Contract errored:", e.message)
-                res.send({ message: "Minting errored.", error: true, details: e.message })
+                // Workaround for mismatch error
+                if (e.message.indexOf("hash mismatch") !== -1) {
+                    const split = e.message.split("returnedHash=")
+                    const txid = split[1].split(',')[0].replace('"', '').replace('"', '')
+                    console.log(txid)
+                    await update(
+                        requestsTable,
+                        { opId: tree.opId, },
+                        "set minted = :m, txid = :t",
+                        { ":m": true, ":t": txid }
+                    )
+                    res.send({ message: "Minting successful.", error: false })
+                } else {
+                    await update(
+                        requestsTable,
+                        { opId: tree.opId, },
+                        "set nonce = :n",
+                        { ":n": "" }
+                    )
+                    console.log("Contract errored:", e.message)
+                    res.send({ message: "Minting errored.", error: true, details: e.message })
+                }
             }
         } else {
             res.send({ message: "Nothing to mint.", error: true })
@@ -155,5 +171,42 @@ export async function getTrees(req: express.Request, res: express.res) {
     } catch (e) {
         console.log(e)
         res.send({ message: "Service is not working, please retry.", error: true })
+    }
+}
+
+export async function confirmMinting(req: express.Request, res: express.res) {
+    try {
+        if (req.body.opid !== undefined && req.body.tx !== undefined && req.body.signature !== undefined) {
+            const provider = new ethers.providers.JsonRpcProvider("https://wallaby.node.glif.io/rpc/v0")
+            const DEPLOYER_PRIVATE_KEY = await returnSecret('nft_proxy')
+            const signer = new ethers.Wallet(DEPLOYER_PRIVATE_KEY).connect(provider)
+            const CaratoDaoRegistryContract = new ethers.Contract(contractAddr, ABI, signer)
+            const prefix = await CaratoDaoRegistryContract.getDecisionMessage()
+            const message = ethers.utils.arrayify(prefix)
+            const verifiedEthers = await ethers.utils.verifyMessage(message, req.body.signature)
+            const check = await CaratoDaoRegistryContract._members(verifiedEthers)
+            console.log("Is address a member?", check)
+            if (check) {
+                const toMint = await scan(requestsTable, "minted = :m and operation = :o", { ":m": false, ":opid": req.body.opid })
+                if (toMint !== null) {
+                    await update(
+                        requestsTable,
+                        { opId: req.body.opid, },
+                        "set minted = :m, tx = :t",
+                        { ":m": true, ":t": req.body.tx }
+                    )
+                    res.send({ message: "Minting confirmed successfully.", error: false })
+                } else {
+                    res.send({ message: "Nothing to mint.", error: true })
+                }
+            } else {
+                res.send({ message: "Not authorized.", error: true })
+            }
+        } else {
+            res.send({ message: "Malformed request.", error: true })
+        }
+    } catch (e) {
+        console.log(e)
+        res.send({ message: "Service is not working, please retry.", error: true, details: e })
     }
 }

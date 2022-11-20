@@ -12,7 +12,6 @@ task("mint-tree", "Mint a new tree.")
       var options = {
         method: "POST",
         url: "https://wallaby.node.glif.io/rpc/v0",
-        // url: "http://localhost:1234/rpc/v0",
         headers: {
           "Content-Type": "application/json",
         },
@@ -56,6 +55,7 @@ task("mint-tree", "Mint a new tree.")
 
       // Take data to pack the transaction
       const priorityFee = await callRpc("eth_maxPriorityFeePerGas");
+      console.log("Priority fee:", priorityFee)
       const nonce0x = await callRpc("eth_getTransactionCount", [signer.address, "latest"]);
       const nonce = parseInt(nonce0x, "hex")
       console.log('nonce:', nonce);
@@ -67,6 +67,12 @@ task("mint-tree", "Mint a new tree.")
         const platningDate = "2022-11-06"
         const details = "More than 700 trees planted in the area"
         // Send transaction
+        /* Send transaction with native contract method
+        const transaction = await CaratoDaoRegistryContract.mintTree([signature], status, coordinates, plantingDate, details, {
+          gasLimit: 10000000000,
+          maxPriorityFeePerGas: priorityFee,
+          nonce: nonce
+        }) */
         const data = await contractInterface.encodeFunctionData("mintTree", [[signature], status, coordinates, platningDate, details])
         const transaction = await signer.sendTransaction({
           from: signer.address,
