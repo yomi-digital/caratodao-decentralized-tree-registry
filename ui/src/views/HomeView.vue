@@ -79,6 +79,7 @@
                 :web3="web3"
                 @closeModal="closeModal()"
             />
+            <FooterApp />
         </div>
     </div>
 </template>
@@ -86,6 +87,7 @@
 <script>
 import Modal from "@/components/Modal.vue"
 import Navbar from "@/components/Navbar.vue"
+import FooterApp from "@/components/FooterApp.vue"
 import Gmap from "@/components/Gmaps.vue"
 import Web3 from "web3"
 import Web3Modal from "web3modal"
@@ -111,6 +113,7 @@ export default {
     },
     components: {
         Navbar,
+        FooterApp,
         Modal,
         Gmap,
     },
