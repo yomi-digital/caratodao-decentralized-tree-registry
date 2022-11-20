@@ -2,7 +2,7 @@
     <div class="p-bottom is-flex is-align-items-center is-justify-content-space-between py-3 px-6">
         <div>
             <p>
-                Developer with ❤️ by <a href="https://yomi.digital" target="_blank"><b>YOMI</b></a>
+                Developed with ❤️ by <a href="https://yomi.digital" target="_blank"><b>YOMI</b></a>
             </p>
         </div>
         <div>
