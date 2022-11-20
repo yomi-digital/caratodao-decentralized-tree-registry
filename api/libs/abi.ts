@@ -280,6 +280,26 @@ export const ABI = [
         "internalType": "bytes[]",
         "name": "signatures",
         "type": "bytes[]"
+      },
+      {
+        "internalType": "string",
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "coordinates",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "plantingDate",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "details",
+        "type": "string"
       }
     ],
     "name": "mintTree",
@@ -535,7 +555,7 @@ export const ABI = [
         "type": "bool"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -6,33 +6,60 @@
             <div class="columns">
                 <div class="column is-5">
                     <div>
-                        <h1 class="">WebTree</h1>
+                        <h1 class="">CaratoDAO</h1>
+                        <h2 class="subtitle">Decentralized Tree Registry</h2>
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                            commodo consequat.
+                            Tree registry is a smart-contract developed on the FEVM, the Filecoin EVM-compatible virtual
+                            machine.<br><br>
+                            Each tree is issued as an NFT by the community and the DAO members are dynamic. Each 3
+                            participants 1 new signature is required to accomplish tasks inside the contract. Metadata
+                            are stored and served directly by the contract, so are completely on-chain.<br><br>
+                            Operations are also gasless, because a backend (or a member) collects all the requests (to
+                            go at web2
+                            speed) and processes them in the background while the DAO can operate fast. This means also
+                            a non-member can ask for inclusion.<br><br>
+                            This is a Proof of Concept, developed between 18th and 20th November 2022, during the first
+                            FEVM Hackaton hosted by EthGlobal.<br><br>
+                            Anyway <a href="https://twitter.com/CaratoDao" target="_blank">Carato</a> is a real project
+                            and we plant trees for real, support us!
                         </p>
                     </div>
+                </div>
+                <div class="column is-7">
+                    <Gmap :account="account" :isMember="isMember" @modalTree="modalTree()" />
                     <!-- ALERT BANNER NO ACCOUNT -->
-                    <div class="mt-6" v-if="!account">
+                    <div class="mt-3" v-if="!account">
                         <div class="alert-banner py-3 px-4">
                             <div class="container">
                                 <p>
                                     <i class="fa-solid fa-circle-exclamation mr-3"></i>
-                                    <b> You have to connect with your wallet to add a tree</b>
+                                    <b>You have to connect with your wallet to add a tree</b>
                                 </p>
                             </div>
                         </div>
                     </div>
                     <!-- END | ALERT BANNER NO ACCOUNT -->
-                </div>
-                <div class="column is-7">
-                    <Gmap :account="account" @modalTree="modalTree()" />
+                    <div class="mt-3" v-if="account">
+                        Dao Active Members: {{ daoMembers }}<br>
+                        Required signatures to reach consensus: {{ requiredSignatures }}<br>
+                        Minted trees: {{ mintedTrees }}
+                    </div>
+                    <!-- ALERT BANNER NO MEMBER -->
+                    <div class="mt-3" v-if="account && !isMember">
+                        <div class="alert-banner py-3 px-4">
+                            <div class="container">
+                                <p>
+                                    <i class="fa-solid fa-circle-exclamation mr-3"></i>
+                                    <b>You are no part of the DAO, you can just propose trees.</b>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END | ALERT BANNER NO MEMBER -->
                 </div>
             </div>
         </div>
-        <Modal :isCreate="isCreate" @closeModal="closeModal()" />
+        <Modal :isCreate="isCreate" :contract="contract" :account="account" :abi="abi" :web3="web3" @closeModal="closeModal()" />
     </div>
 </template>
 
@@ -42,16 +69,22 @@ import Navbar from "@/components/Navbar.vue"
 import Gmap from "@/components/Gmaps.vue"
 import Web3 from "web3"
 import Web3Modal from "web3modal"
+import ABI from "../assets/abi.json"
 export default {
     name: "home-app",
     data() {
         return {
             account: "",
+            contract: "0xA5EDc79f51A8138511C2408870a88840d7Ad27D8",
             web3: "",
             network: 18,
-            abi: "",
+            abi: ABI,
             balance: "",
             isCreate: false,
+            isMember: false,
+            daoMembers: 0,
+            requiredSignatures: 0,
+            mintedTrees: 0
         }
     },
     components: {
@@ -86,6 +119,12 @@ export default {
                         app.balance = parseFloat(
                             app.web3.utils.fromWei(app.balance, "ether")
                         ).toFixed(10)
+                        const contract = new app.web3.eth.Contract(app.abi, app.contract);
+                        app.isMember = await contract.methods._members(app.account).call()
+                        app.daoMembers = await contract.methods._activeMembers().call()
+                        app.requiredSignatures = await contract.methods.consensusThreshold().call()
+                        app.mintedTrees = await contract.methods.totalSupply().call()
+                        console.log("Is account member?", app.isMember)
                     }
                 } catch (e) {
                     console.log("USER_CONNECT", e.message)

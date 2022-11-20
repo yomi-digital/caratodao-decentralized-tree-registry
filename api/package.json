@@ -32,7 +32,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.0.2",
     "ethereumjs-wallet": "^1.0.2",
-    "ethers": "^5.6.2",
+    "ethers": "^5.7.2",
     "express": "^4.17.2",
     "nodemailer": "^6.7.3",
     "nodemailer-plugin-inline-base64": "^2.1.1",

@@ -65,7 +65,7 @@ task("mint-tree", "Mint a new tree.")
         const status = "GROWING"
         const coordinates = "36.8853942,14.5329769"
         const platningDate = "2022-11-06"
-        const details = "Quercus"
+        const details = "More than 700 trees planted in the area"
         // Send transaction
         const data = await contractInterface.encodeFunctionData("mintTree", [[signature], status, coordinates, platningDate, details])
         const transaction = await signer.sendTransaction({

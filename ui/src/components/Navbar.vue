@@ -26,7 +26,7 @@
         </div>
 
         <div class="mr-6">
-            <div class="btn-primary ml-3" @click="$emit('connect')">CONNECT</div>
+            <div v-if="!account" class="btn-primary ml-3" @click="$emit('connect')">CONNECT</div>
         </div>
     </div>
 </template>
